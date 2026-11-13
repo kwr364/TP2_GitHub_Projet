@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Gestionnaire de tâches</title>
+
+  <!-- Feuille de style externe -->
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  <main class="app">
+
+    <!-- ===== 1. En-tête : titre, compteur et progression ===== -->
+    <header class="app__entete">
+      <h1>Gestionnaire de tâches</h1>
+      <p id="compteur" class="app__compteur" aria-live="polite"></p>
+
+      <div id="progression" class="progression" role="progressbar"
+           aria-label="Progression des tâches" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+        <div id="progression-barre" class="progression__barre"></div>
+      </div>
+    </header>
+
+    <!-- ===== 2. Formulaire d'ajout ===== -->
+    <form id="formulaire" class="formulaire" autocomplete="off">
+      <label for="champ-tache" class="sr-only">Nouvelle tâche</label>
+      <input id="champ-tache" type="text" placeholder="Que faut-il faire ?" maxlength="120" required>
+      <button type="submit" class="btn btn--primaire">Ajouter</button>
+    </form>
+
+    <!-- ===== 3. Filtres d'affichage ===== -->
+    <nav class="filtres" aria-label="Filtrer les tâches">
+      <button type="button" class="filtre filtre--actif" data-filtre="toutes">Toutes</button>
+      <button type="button" class="filtre" data-filtre="actives">À faire</button>
+      <button type="button" class="filtre" data-filtre="terminees">Terminées</button>
+    </nav>
+
+    <!-- ===== 4. Liste des tâches (remplie par script.js) ===== -->
+    <ul id="liste" class="liste"></ul>
+    <p id="message-vide" class="message-vide" hidden></p>
+
+    <!-- ===== 5. Pied de page : action groupée ===== -->
+    <footer class="app__pied">
+      <button type="button" id="btn-vider" class="btn btn--secondaire">Supprimer les tâches terminées</button>
+    </footer>
+
+  </main>
+
+  <!-- Script externe, chargé en dernier pour que le DOM soit prêt -->
+  <script src="script.js"></script>
+</body>
+</html>

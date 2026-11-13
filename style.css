@@ -1,0 +1,326 @@
+/* ==========================================================
+   style.css – Gestionnaire de tâches
+
+   SOMMAIRE
+   1. Variables (couleurs, rayons, ombres) + thème sombre
+   2. Base (reset, corps de page, accessibilité)
+   3. Conteneur principal et en-tête
+   4. Barre de progression
+   5. Formulaire d'ajout
+   6. Filtres
+   7. Liste des tâches
+   8. Boutons
+   9. Utilitaires
+   10. Responsive
+   ========================================================== */
+
+
+/* ---------- 1. VARIABLES ---------- */
+:root {
+  --fond: #eef2f7;
+  --surface: #ffffff;
+  --encre: #14213d;
+  --encre-douce: #5b6785;
+  --bordure: #d5dce8;
+  --accent: #2f5bea;
+  --accent-fonce: #1f43b8;
+  --sur-accent: #ffffff;       /* couleur du texte posé sur l'accent */
+  --succes: #2e7d5b;
+  --danger: #c0392b;
+  --rayon: 10px;
+  --ombre: 0 8px 24px rgba(20, 33, 61, 0.08);
+}
+
+/* Thème sombre automatique selon les réglages du système */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --fond: #0f1626;
+    --surface: #18233b;
+    --encre: #e8edf7;
+    --encre-douce: #9aa7c4;
+    --bordure: #2b3858;
+    --accent: #6e93ff;
+    --accent-fonce: #8fabff;
+    --sur-accent: #0f1626;
+    --succes: #5cc596;
+    --danger: #ff7b6b;
+    --ombre: 0 8px 24px rgba(0, 0, 0, 0.35);
+  }
+}
+
+
+/* ---------- 2. BASE ---------- */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  padding: 2rem 1rem;
+  background: var(--fond);
+  color: var(--encre);
+  font-family: "Segoe UI", system-ui, -apple-system, Roboto, "Helvetica Neue", Arial, sans-serif;
+  line-height: 1.5;
+}
+
+/* Contour de focus visible pour la navigation au clavier */
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* Garantit que l'attribut hidden masque bien l'élément */
+[hidden] {
+  display: none !important;
+}
+
+
+/* ---------- 3. CONTENEUR ET EN-TÊTE ---------- */
+.app {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 1.75rem;
+  background: var(--surface);
+  border-radius: calc(var(--rayon) + 4px);
+  box-shadow: var(--ombre);
+}
+
+.app__entete h1 {
+  margin: 0;
+  font-size: 1.75rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.app__compteur {
+  margin: 0.25rem 0 0.75rem;
+  color: var(--encre-douce);
+}
+
+.app__pied {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 1.25rem;
+}
+
+
+/* ---------- 4. BARRE DE PROGRESSION ---------- */
+.progression {
+  height: 6px;
+  margin-bottom: 1.5rem;
+  background: var(--bordure);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.progression__barre {
+  width: 0;                      /* modifiée par script.js */
+  height: 100%;
+  background: var(--succes);
+  transition: width 0.3s ease;
+}
+
+
+/* ---------- 5. FORMULAIRE D'AJOUT ---------- */
+.formulaire {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.formulaire input {
+  flex: 1;
+  padding: 0.7rem 0.9rem;
+  border: 1px solid var(--bordure);
+  border-radius: var(--rayon);
+  background: var(--surface);
+  color: inherit;
+  font: inherit;
+}
+
+.formulaire input::placeholder {
+  color: var(--encre-douce);
+}
+
+
+/* ---------- 6. FILTRES ---------- */
+.filtres {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.filtre {
+  padding: 0.35rem 0.85rem;
+  border: 1px solid var(--bordure);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--encre-douce);
+  font: inherit;
+  cursor: pointer;
+}
+
+.filtre:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.filtre--actif,
+.filtre--actif:hover {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--sur-accent);
+}
+
+
+/* ---------- 7. LISTE DES TÂCHES ---------- */
+.liste {
+  display: grid;
+  gap: 0.5rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.tache {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.65rem 0.8rem;
+  border: 1px solid var(--bordure);
+  border-left: 4px solid var(--accent);   /* bleu = à faire */
+  border-radius: var(--rayon);
+}
+
+.tache--terminee {
+  border-left-color: var(--succes);       /* vert = terminée */
+}
+
+.tache--terminee .tache__titre {
+  color: var(--encre-douce);
+  text-decoration: line-through;
+}
+
+.tache input[type="checkbox"] {
+  width: 1.15rem;
+  height: 1.15rem;
+  accent-color: var(--succes);
+  cursor: pointer;
+}
+
+.tache__titre {
+  flex: 1;
+  overflow-wrap: anywhere;                /* évite les débordements */
+}
+
+.tache__actions {
+  display: flex;
+  gap: 0.25rem;
+}
+
+.message-vide {
+  padding: 1.5rem 0;
+  text-align: center;
+  color: var(--encre-douce);
+}
+
+
+/* ---------- 8. BOUTONS ---------- */
+.btn {
+  padding: 0.7rem 1.1rem;
+  border: 1px solid transparent;
+  border-radius: var(--rayon);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btn--primaire {
+  background: var(--accent);
+  color: var(--sur-accent);
+}
+
+.btn--primaire:hover {
+  background: var(--accent-fonce);
+}
+
+.btn--secondaire {
+  background: transparent;
+  border-color: var(--bordure);
+  color: var(--encre-douce);
+}
+
+.btn--secondaire:hover:not(:disabled) {
+  border-color: var(--danger);
+  color: var(--danger);
+}
+
+/* Petits boutons « Modifier » / « Supprimer » d'une tâche */
+.btn-action {
+  padding: 0.25rem 0.55rem;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--encre-douce);
+  font: inherit;
+  font-size: 0.875rem;
+  cursor: pointer;
+}
+
+.btn-action:hover {
+  background: var(--fond);
+  color: var(--encre);
+}
+
+.btn-action--danger:hover {
+  color: var(--danger);
+}
+
+
+/* ---------- 9. UTILITAIRES ---------- */
+/* Texte lisible uniquement par les lecteurs d'écran */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Respect de la préférence « réduire les animations » */
+@media (prefers-reduced-motion: reduce) {
+  .progression__barre {
+    transition: none;
+  }
+}
+
+
+/* ---------- 10. RESPONSIVE ---------- */
+@media (max-width: 480px) {
+  .app {
+    padding: 1.25rem;
+  }
+
+  .formulaire {
+    flex-direction: column;
+  }
+
+  .tache {
+    flex-wrap: wrap;
+  }
+
+  .tache__actions {
+    width: 100%;
+    justify-content: flex-end;
+  }
+}
